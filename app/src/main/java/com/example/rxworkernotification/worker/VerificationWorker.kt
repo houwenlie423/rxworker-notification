@@ -28,8 +28,6 @@ class VerificationWorker(
         val param1 = workerParameters.inputData.getString(VerificationWorkerKeys.PARAM_1).orEmpty()
         val param2 = workerParameters.inputData.getString(VerificationWorkerKeys.PARAM_2).orEmpty()
 
-        id
-
         return if (param1.isNotEmpty() && param2.isNotEmpty()) {
             if (agree) {
                 FakeUseCase.agree(param1, param2)
