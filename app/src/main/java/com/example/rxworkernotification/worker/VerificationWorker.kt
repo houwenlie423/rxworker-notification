@@ -45,10 +45,6 @@ class VerificationWorker(
         }
     }
 
-    override fun getBackgroundScheduler(): Scheduler {
-        return Schedulers.io()
-    }
-
     companion object {
 
         fun start(
