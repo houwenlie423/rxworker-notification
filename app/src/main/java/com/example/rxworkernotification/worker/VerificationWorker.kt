@@ -8,7 +8,9 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.RxWorker
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.example.rxworkernotification.notification.NotificationUtil
 import com.example.rxworkernotification.utils.FakeUseCase
+import com.example.rxworkernotification.utils.subscribeByAutoDispose
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -28,15 +30,51 @@ class VerificationWorker(
         val param1 = workerParameters.inputData.getString(VerificationWorkerKeys.PARAM_1).orEmpty()
         val param2 = workerParameters.inputData.getString(VerificationWorkerKeys.PARAM_2).orEmpty()
 
+//        return if (param1.isNotEmpty() && param2.isNotEmpty()) {
+//            if (agree) {
+//                FakeUseCase.agree(param1, param2)
+//                    .andThen(Single.just(Result.success()))
+//                    .onErrorReturnItem(Result.failure())
+//            } else {
+//                FakeUseCase.reject(param1, param2)
+//                    .andThen(Single.just(Result.success()))
+//                    .onErrorReturnItem(Result.failure())
+//            }
+//        } else {
+//            Single.just(Result.failure())
+//        }
+
         return if (param1.isNotEmpty() && param2.isNotEmpty()) {
-            if (agree) {
-                FakeUseCase.agree(param1, param2)
-                    .andThen(Single.just(Result.success()))
-                    .onErrorReturnItem(Result.failure())
-            } else {
-                FakeUseCase.reject(param1, param2)
-                    .andThen(Single.just(Result.success()))
-                    .onErrorReturnItem(Result.failure())
+            val service =
+                if (agree) FakeUseCase.agree(param1, param2) else FakeUseCase.reject(param1, param2)
+
+            Single.create { emitter ->
+                service
+                    .doOnSubscribe {
+                        NotificationUtil.showNotification(
+                            context = context,
+                            title = "PLEASE WAIT",
+                            message = "Loading...."
+                        )
+                    }
+                    .subscribeByAutoDispose(
+                        onComplete = {
+                            emitter.onSuccess(Result.success())
+                            NotificationUtil.showNotification(
+                                context = context,
+                                title = "Success bro",
+                                message = "Ceritanya success"
+                            )
+                        },
+                        onError = {
+                            emitter.onSuccess(Result.failure())
+                            NotificationUtil.showNotification(
+                                context = context,
+                                title = "WADUH ERROR COK",
+                                message = "Error = ${it.message}"
+                            )
+                        }
+                    )
             }
         } else {
             Single.just(Result.failure())
