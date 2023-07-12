@@ -10,6 +10,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.example.rxworkernotification.notification.NotificationUtil
 import com.example.rxworkernotification.utils.FakeUseCase
+import com.example.rxworkernotification.utils.applySchedulers
 import com.example.rxworkernotification.utils.subscribeByAutoDispose
 import io.reactivex.Scheduler
 import io.reactivex.Single
@@ -50,6 +51,7 @@ class VerificationWorker(
 
             Single.create { emitter ->
                 service
+                    .applySchedulers()
                     .doOnSubscribe {
                         NotificationUtil.showNotification(
                             context = context,
