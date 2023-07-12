@@ -80,7 +80,6 @@ object NotificationService {
             smallIcon = R.drawable.ic_sport_kabaddi,
             contentIntent = contentPendingIntent,
             actions = listOf(agreeAction, rejectAction),
-            tag = "Verification"
         )
 
     }

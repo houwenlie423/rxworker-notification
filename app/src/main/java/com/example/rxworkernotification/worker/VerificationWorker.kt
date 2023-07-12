@@ -31,23 +31,8 @@ class VerificationWorker(
         val param1 = workerParameters.inputData.getString(VerificationWorkerKeys.PARAM_1).orEmpty()
         val param2 = workerParameters.inputData.getString(VerificationWorkerKeys.PARAM_2).orEmpty()
 
-//        return if (param1.isNotEmpty() && param2.isNotEmpty()) {
-//            if (agree) {
-//                FakeUseCase.agree(param1, param2)
-//                    .andThen(Single.just(Result.success()))
-//                    .onErrorReturnItem(Result.failure())
-//            } else {
-//                FakeUseCase.reject(param1, param2)
-//                    .andThen(Single.just(Result.success()))
-//                    .onErrorReturnItem(Result.failure())
-//            }
-//        } else {
-//            Single.just(Result.failure())
-//        }
-
         return if (param1.isNotEmpty() && param2.isNotEmpty()) {
-            val service =
-                if (agree) FakeUseCase.agree(param1, param2) else FakeUseCase.reject(param1, param2)
+            val service = if (agree) FakeUseCase.agree(param1, param2) else FakeUseCase.reject(param1, param2)
 
             Single.create { emitter ->
                 service

@@ -28,7 +28,8 @@ object NotificationUtil {
         contentIntent: PendingIntent? = null,
         actions: List<NotificationCompat.Action> = emptyList(),
         autoCancel: Boolean = true,
-        tag: String = ""
+        tag: String = "",
+        notificationId: Int = 322
     ) {
         val channelId = context.getString(R.string.default_notification_channel_id)
         val builder = NotificationCompat.Builder(context, channelId)
@@ -41,9 +42,9 @@ object NotificationUtil {
         actions.take(MAXIMUM_ACTIONS).forEach { action -> builder.addAction(action) }
 
         if (tag.isEmpty()) {
-            getNotificationManager(context).notify(Random.nextInt(), builder.build())
+            getNotificationManager(context).notify(notificationId, builder.build())
         } else {
-            getNotificationManager(context).notify(tag, Random.nextInt(), builder.build())
+            getNotificationManager(context).notify(tag, notificationId, builder.build())
         }
 
     }

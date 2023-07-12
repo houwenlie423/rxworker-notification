@@ -24,7 +24,6 @@ class VerificationBroadcastReceiver : BroadcastReceiver() {
 
         if (context != null && param1.isNotEmpty() && param2.isNotEmpty()) {
             VerificationWorker.start(context, agree, param1, param2)
-            NotificationUtil.clearNotificationsWithTag(context, "Verification")
         }
     }
 }
