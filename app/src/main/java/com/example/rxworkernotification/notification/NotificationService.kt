@@ -4,6 +4,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import androidx.core.app.NotificationCompat
 import com.example.rxworkernotification.R
 import com.example.rxworkernotification.SecondaryActivity
@@ -67,7 +70,7 @@ object NotificationService {
         )
         val rejectAction = NotificationCompat.Action.Builder(
             R.drawable.ic_sport_kabaddi,
-            "Reject",
+            createRejectText(context),
             rejectPendingIntent // Change this to actual Intent that executes WorkManager
         ).build()
 
@@ -81,7 +84,16 @@ object NotificationService {
             contentIntent = contentPendingIntent,
             actions = listOf(agreeAction, rejectAction),
         )
+    }
 
+    private fun createRejectText(context: Context) : Spannable {
+        return SpannableString("Reject").apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+                setSpan(
+                    ForegroundColorSpan(context.getColor(R.color.red)), 0, length, 0
+                )
+            }
+        }
     }
 
     fun showCounterNotification() {}
